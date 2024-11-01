@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ sidebarOpen: false, isLoggedIn: false }">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <script src="tailwind.config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <script src="function/function.js"></script>
+    <script
+      src="https://kit.fontawesome.com/26d8d3b5e2.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body
+    class="bg-gray-100"
+    x-data="{ sidebarOpen: false, isLoggedIn: false }"
+    x-init="isLoggedIn = localStorage.getItem('login') === 'true'"
+  >
+    <!-- Login Modal -->
+    <div
+      id="loginModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
+      x-show="!isLoggedIn"
+    >
+      <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <h2 class="mb-6 text-2xl font-semibold text-center text-gray-800">
+          Login
+        </h2>
+        <input
+          type="text"
+          id="username"
+          placeholder="Username"
+          class="w-full p-2 mb-4 border rounded-md"
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          class="w-full p-2 mb-4 border rounded-md"
+        />
+        <button
+          @click="login()"
+          class="w-full p-2 text-white bg-red-600 rounded-md hover:bg-red-700"
+        >
+          Login
+        </button>
+      </div>
+    </div>
+
+    <!-- Page Wrapper -->
+    <div class="flex h-screen overflow-hidden" x-show="isLoggedIn">
+      <!-- Sidebar -->
+      <aside
+        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+        class="fixed inset-y-0 left-0 z-20 w-72 p-4 h-screen bg-gray-800 text-gray-300 transform transition-transform duration-200 lg:relative lg:translate-x-0"
+      >
+        <div class="flex items-center justify-between xl:justify-center mb-8">
+          <!-- Logo -->
+
+          <button
+            @click="sidebarOpen = !sidebarOpen"
+            class="text-gray-300 lg:hidden"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <nav class="flex flex-col">
+          <!-- Dashboard Link -->
+          <div class="space-y-3">
+            <a
+              href="#"
+              class="flex items-center p-2 transition rounded-lg hover:bg-gray-700 bg-gray-700"
+            >
+              <i class="fas fa-tachometer-alt mr-4 text-red-600"></i>
+              <span>Dashboard</span>
+            </a>
+
+            <!-- Reports (Collapsible Section) -->
+            <div x-data="{ open: false}">
+              <button
+                @click="open = !open"
+                class="flex items-center w-full p-2 text-left transition rounded-lg hover:bg-gray-700"
+              >
+                <i class="fas fa-chart-bar mr-4 text-red-600"></i>
+                <span>Rekapan</span>
+                <i class="fas fa-chevron-down ml-auto"></i>
+              </button>
+              <div x-show="open" class="pl-8 space-y-2">
+                <a
+                  href="#"
+                  class="flex items-center p-2 transition rounded-lg hover:bg-gray-700"
+                >
+                  <i class="fas fa-calendar-alt mr-4 text-red-600"></i>
+                  <span>Rekap Bulanan</span>
+                </a>
+                <a
+                  href="#"
+                  class="flex items-center p-2 transition rounded-lg hover:bg-gray-700"
+                >
+                  <i class="fas fa-calendar-week mr-4 text-red-600"></i>
+                  <span>Rekap Mingguan</span>
+                </a>
+              </div>
+            </div>
+
+            <a
+              href="#"
+              class="flex items-center p-2 transition rounded-lg hover:bg-gray-700"
+            >
+              <i class="fas fa-file-signature mr-4 text-red-600"></i>
+              <span>Pengajuan Perizinan</span>
+            </a>
+          </div>
+
+          <!-- Exit Button -->
+          <a
+            href="#"
+            @click="logout()"
+            class="flex items-center p-2 mt-8 bg-red-600 transition rounded-lg hover:bg-red-800"
+          >
+            <i class="fas fa-sign-out-alt mr-4"></i>
+            <span>Exit</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="flex flex-col flex-1 p-6 lg:ml-32 bg-gray-100">
+        <!-- Hamburger Icon (Mobile) -->
+        <header class="flex items-center max-xl:justify-between gap-8 mb-8">
+          <button
+            @click="sidebarOpen = !sidebarOpen"
+            class="text-gray-700 focus:outline-none lg:hidden rounded-lg p-2 duration-300 hover:text-white hover:bg-red-700"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+
+          <img
+            src="./src/img/logo.png"
+            alt="Sulsel Logo"
+            class="w-12 h-12 object-contain"
+          />
+          <div class="flex flex-col flex-wrap">
+            <span class="text-4xl font-bold text-red-800 max-md:text-2xl"
+              >SMART</span
+            >
+            <span class="text-xl font-medium text-balance max-md:text-sm"
+              >Sistem Manajemen Absensi Real Time untuk Peserta Magang dan
+              Praktek Kerja Lapangan (PKL)</span
+            >
+          </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="mt-8 mb-12">
+          <h1 class="text-4xl font-light text-gray-700">
+            Daftar Peserta Magang/PKL
+          </h1>
+        </div>
+        <div
+          x-data="datatable"
+          class="bg-white shadow-md p-4 sm:px-4 sm:py-8 max-w-full sm:max-w-4xl rounded-lg"
+        >
+          <!-- Filter & Search -->
+          <div
+            class="flex gap-2  flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-4 sm:space-y-0"
+          >
+            <input
+              type="text"
+              placeholder="Cari..."
+              x-model="search"
+              class="px-4 flex-1 py-2 w-full sm:w-auto border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-red-500"
+            />
+            <select
+              x-model="statusFilter"
+              class="basis-28 min-w px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-red-500"
+            >
+              <option value="">Semua Status</option>
+              <option value="aktif">Aktif</option>
+              <option value="tidak aktif">Tidak Aktif</option>
+            </select>
+            <!-- Edit Button -->
+            <button
+              @click="openModal"
+              class="px-4 py-2 bg-red-500 text-white rounded-md focus:outline-none"
+            >
+              Edit
+            </button>
+          </div>
+
+          <!-- Main Table -->
+          <div class="overflow-x-auto">
+            <table
+              class="min-w-full bg-gray-100 border border-gray-300 rounded-lg overflow-hidden shadow-sm"
+            >
+              <thead class="bg-gray-700 text-white">
+                <tr>
+                  <th class="px-4 py-2 text-left">No</th>
+                  <th class="px-4 py-2 text-left">Nama</th>
+                  <th class="px-4 py-2 text-left">Instansi / Sekolah</th>
+                  <th class="px-4 py-2 text-left">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="(row, index) in paginatedData()" :key="index">
+                  <tr :class="index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'">
+                    <td
+                      class="px-4 py-2 border-b border-gray-300"
+                      x-text="index + 1 + (currentPage - 1) * perPage"
+                    ></td>
+                    <td
+                      class="px-4 py-2 border-b border-gray-300"
+                      x-text="row.nama"
+                    ></td>
+                    <td
+                      class="px-4 py-2 border-b border-gray-300"
+                      x-text="row.instansi"
+                    ></td>
+                    <td
+                      class="px-4 py-2 border-b border-gray-300"
+                      :class="row.status === 'aktif' ? 'text-green-500' : 'text-red-500'"
+                      x-text="row.status"
+                    ></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="flex items-center justify-between mt-4">
+            <button
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md disabled:opacity-50"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <span
+              x-text="`Halaman ${currentPage} dari ${totalPages}`"
+              class="text-gray-700"
+            ></span>
+            <button
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md disabled:opacity-50"
+            >
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Edit Modal -->
+          <div
+            x-show="isModalOpen"
+            x-transition
+            class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center"
+          >
+            <div
+              @click.away="closeModal"
+              class="bg-white rounded-lg p-8 shadow-lg w-full max-w-3xl"
+            >
+              <h2 class="text-xl font-bold mb-4 text-gray-700">Edit Status</h2>
+              <div class="overflow-x-auto">
+                <table
+                  class="min-w-full bg-gray-100 border border-gray-300 rounded-lg overflow-hidden shadow-sm"
+                >
+                  <thead class="bg-gray-700 text-white">
+                    <tr>
+                      <th class="px-4 py-2 text-left">No</th>
+                      <th class="px-4 py-2 text-left">Nama</th>
+                      <th class="px-4 py-2 text-left">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="(row, index) in filteredData" :key="index">
+                      <tr
+                        :class="index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'"
+                      >
+                        <td
+                          class="px-4 py-2 border-b border-gray-300"
+                          x-text="index + 1"
+                        ></td>
+                        <td
+                          class="px-4 py-2 border-b border-gray-300"
+                          x-text="row.nama"
+                        ></td>
+                        <td class="px-4 py-2 border-b border-gray-300">
+                          <button
+                            @click="toggleStatus(row)"
+                            :class="row.status === 'aktif' ? 'bg-green-500' : 'bg-red-500'"
+                            class="px-4 py-1 text-white rounded-md focus:outline-none"
+                          >
+                            <span x-text="row.status"></span>
+                          </button>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+              <div class="flex justify-end mt-4">
+                <button
+                  @click="closeModal"
+                  class="px-4 py-2 bg-red-500 text-white rounded-md focus:outline-none"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
